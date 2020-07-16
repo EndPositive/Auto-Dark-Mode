@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
+using System.Diagnostics;
 using ADM.Properties;
 using Microsoft.Win32;
 
@@ -16,9 +16,7 @@ namespace ADM.Helpers
             _key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             if (_key == null) throw new Exception("Startup registry not found");
             
-            var dllPath = Application.ExecutablePath;
-            _exe = dllPath.Substring(0, dllPath.Length - 3) + "exe";
-
+            _exe = Process.GetCurrentProcess().MainModule?.FileName;
             Apply();
         }
 

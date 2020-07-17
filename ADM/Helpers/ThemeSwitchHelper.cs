@@ -1,16 +1,10 @@
 ﻿using System;
 using ADM.Properties;
-using Microsoft.Win32;
 
 namespace ADM.Helpers
 {
     public static class ThemeSwitchHelper
     {
-        private const string KeysFolder =
-            "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
-        private const string AppsUseLightThemeKey = "AppsUseLightTheme";
-        private const string SystemUsesLightThemeKey = "SystemUsesLightTheme";
-        
         public enum Mode
         {
             Dark, Light
@@ -18,8 +12,11 @@ namespace ADM.Helpers
 
         public static void Switch(Mode theme)
         {
-            Registry.SetValue(KeysFolder, AppsUseLightThemeKey, (int) theme);
-            Registry.SetValue(KeysFolder, SystemUsesLightThemeKey, (int) theme);
+            foreach (var keyString in Settings.Default.Keys)
+            {
+                var key = new KeySerializerHelper(keyString);
+                key.Key.SetValue(key.Name, theme == Mode.Light ? key.Light : key.Dark);
+            }
         }
 
         public static Mode? Now()

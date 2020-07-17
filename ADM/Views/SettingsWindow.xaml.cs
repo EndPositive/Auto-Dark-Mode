@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using ADM.Helpers;
 using ADM.Properties;
 
-namespace ADM
+namespace ADM.Views
 {
     public partial class SettingsWindow
     {
         private readonly ThemeSwitchService _themeSwitchService;
         private readonly StartupHelper _startupHelper;
+        private readonly ObservableCollection<string> _themeRegistry;
 
         public SettingsWindow(ThemeSwitchService themeSwitchService, StartupHelper startupHelper)
         {
@@ -33,8 +36,29 @@ namespace ADM
 
             SaveButton.Visibility = Visibility.Collapsed;
 
+            _themeRegistry = new ObservableCollection<string>();
+            UpdateRegistry();
+            KeysListBox.ItemsSource = _themeRegistry;
+
             // TODO: Detect Windows theme switch while window is open
             StartupToggleSwitch.IsOn = Settings.Default.Startup;
+        }
+
+        private void UpdateRegistry()
+        {
+            bool containsSystemApps = false, containsSystemUi = false;
+            _themeRegistry.Clear();
+            foreach (var keyString in Settings.Default.Keys)
+            {
+                var key = new KeySerializerHelper(keyString);
+                _themeRegistry.Add(key.Application);
+
+                if (key.Application == "System UI") containsSystemUi = true;
+                else if (key.Application == "System Apps") containsSystemApps = true;
+            }
+
+            if (!containsSystemApps) RestoreAppsButton.Visibility = Visibility.Visible;
+            if (!containsSystemUi) RestoreUiButton.Visibility = Visibility.Visible;
         }
 
         private void EnableThemingCheckbox_Click(object sender, RoutedEventArgs e)
@@ -71,6 +95,48 @@ namespace ADM
         {
             SaveButton.Content = "Apply";
             SaveButton.Visibility = Visibility.Visible;
+        }
+
+        private void KeysListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RemoveButton.Visibility = Visibility.Visible;
+        }
+
+        private void AddButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var registryWindow = new RegistryWindow(_themeRegistry);
+            registryWindow.ShowDialog();
+            UpdateRegistry();
+        }
+
+        private void RemoveButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (KeysListBox.SelectedItem == null) return;
+            var application = KeysListBox.SelectedItem.ToString();
+            foreach (var keyString in Settings.Default.Keys)
+            {
+                var key = new KeySerializerHelper(keyString);
+                if (key.Application != application) continue;
+                Settings.Default.Keys.Remove(keyString);
+                Settings.Default.Save();
+                break;
+            }
+            UpdateRegistry();
+            RemoveButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void RestoreAppsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            KeySerializerHelper.AddApps();
+            UpdateRegistry();
+            RestoreAppsButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void RestoreUIButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            KeySerializerHelper.AddUI();
+            UpdateRegistry();
+            RestoreUiButton.Visibility = Visibility.Collapsed;
         }
     }
 }

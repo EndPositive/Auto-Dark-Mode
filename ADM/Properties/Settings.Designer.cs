@@ -70,5 +70,16 @@ namespace ADM.Properties {
                 this["Startup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection Keys {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Keys"]));
+            }
+            set {
+                this["Keys"] = value;
+            }
+        }
     }
 }

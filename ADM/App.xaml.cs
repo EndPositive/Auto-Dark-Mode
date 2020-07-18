@@ -11,8 +11,8 @@ namespace ADM
             if (Settings.Default.Keys == null)
             {
                 Settings.Default.Keys = new StringCollection();
-                KeySerializerHelper.AddApps();
-                KeySerializerHelper.AddUI();
+                RegistryHelper.RestoreApps();
+                RegistryHelper.RestoreUi();
             }
             var themeSwitchService = new ThemeSwitchService();
             var startupHelper = new StartupHelper();

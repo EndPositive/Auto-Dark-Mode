@@ -12,10 +12,10 @@ namespace ADM.Helpers
 
         public static void Switch(Mode theme)
         {
-            foreach (var keyString in Settings.Default.Keys)
+            var registrySettings = RegistryHelper.GetSettings();
+            foreach (var registrySetting in registrySettings)
             {
-                var key = new KeySerializerHelper(keyString);
-                key.Key.SetValue(key.Name, theme == Mode.Light ? key.Light : key.Dark);
+                registrySetting.Key.SetValue(registrySetting.Name, theme == Mode.Light ? registrySetting.Light : registrySetting.Dark);
             }
         }
 

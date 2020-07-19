@@ -22,7 +22,7 @@ namespace ADM
         {
             try
             {
-                ThemeSwitchHelper.Switch(ThemeSwitchHelper.Now() ?? throw new Exception("Big ass"));
+                ThemeSwitchHelper.Switch(ThemeSwitchHelper.Now());
 
                 var props = new NameValueCollection
                 {

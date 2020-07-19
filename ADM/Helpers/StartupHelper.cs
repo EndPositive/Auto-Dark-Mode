@@ -13,8 +13,9 @@ namespace ADM.Helpers
 
         public StartupHelper()
         {
-            _key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            if (_key == null) throw new Exception("Startup registry not found");
+            var startupRegistry = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+            _key = Registry.CurrentUser.OpenSubKey(startupRegistry, true);
+            if (_key == null) throw new Exception("Could not find startup registry: " + startupRegistry);
             
             _exe = Process.GetCurrentProcess().MainModule?.FileName;
             Apply();
@@ -28,7 +29,7 @@ namespace ADM.Helpers
 
         private void Add()
         {
-            if (IsAdded()) throw new Exception("Already added");
+            if (IsAdded()) return;
 
             _key.SetValue(KeyName, _exe);
             
@@ -37,7 +38,8 @@ namespace ADM.Helpers
 
         private void Remove()
         {
-            if (!IsAdded()) throw new Exception("Key does not exist");
+            if (!IsAdded()) return;
+            
             _key.DeleteValue(KeyName);
             
             NotificationHelper.New("Auto Dark Mode", "This app is removed from startup.");

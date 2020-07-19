@@ -78,8 +78,8 @@ namespace ADM.Views
         {
             SaveButton.Content = "Saving...";
 
-            Settings.Default.StartTime = StartTimePicker.SelectedDateTime ?? throw new Exception("Big fuck");
-            Settings.Default.EndTime = EndTimePicker.SelectedDateTime ?? throw new Exception("Big fuck");
+            Settings.Default.StartTime = StartTimePicker.SelectedDateTime ?? throw new Exception("Could not save due to no proper start time selected.");
+            Settings.Default.EndTime = EndTimePicker.SelectedDateTime ?? throw new Exception("Could not save due to no proper end time selected.");
 
             Settings.Default.Save();
 

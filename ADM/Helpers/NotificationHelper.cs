@@ -1,5 +1,5 @@
-﻿using System;
-using Windows.UI.Notifications;
+﻿using Windows.UI.Notifications;
+using ADM.Views;
 
 namespace ADM.Helpers
 {
@@ -10,7 +10,7 @@ namespace ADM.Helpers
             var template = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
             
             var textNodes = template.GetElementsByTagName("text");
-            if (textNodes.Length == 0) throw new Exception("Could not properly initialize a notification.");
+            if (textNodes.Length == 0) new ExceptionWindow("Could not properly initialize a notification.");
             textNodes[0].InnerText = text;
 
             var notifier = ToastNotificationManager.CreateToastNotifier(heading);

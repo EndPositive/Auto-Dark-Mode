@@ -11,7 +11,7 @@ namespace ADM.Views
     {
         private readonly ThemeSwitchService _themeSwitchService;
         private readonly StartupHelper _startupHelper;
-        private ObservableCollection<string> _observable;
+        private readonly ObservableCollection<string> _observable;
 
         public SettingsWindow(ThemeSwitchService themeSwitchService, StartupHelper startupHelper)
         {
@@ -47,11 +47,12 @@ namespace ADM.Views
         private void UpdateObservable()
         {
             bool appsButtonVisible = true, uiButtonVisible = true;
-            _observable = RegistryHelper.GetObservable();
-            foreach (var applicationName in _observable)
+            _observable.Clear();
+            foreach (var applicationName in RegistryHelper.GetObservable())
             {
-                if (applicationName == "System UI") appsButtonVisible = false;
-                else if (applicationName == "System Apps") uiButtonVisible = false;
+                _observable.Add(applicationName);
+                if (applicationName == "System UI") uiButtonVisible = false;
+                else if (applicationName == "System Apps") appsButtonVisible = false;
             }
 
             RestoreAppsButton.Visibility = appsButtonVisible ? Visibility.Visible : Visibility.Collapsed;
@@ -78,9 +79,11 @@ namespace ADM.Views
         {
             SaveButton.Content = "Saving...";
 
-            Settings.Default.StartTime = StartTimePicker.SelectedDateTime ?? throw new Exception("Could not save due to no proper start time selected.");
-            Settings.Default.EndTime = EndTimePicker.SelectedDateTime ?? throw new Exception("Could not save due to no proper end time selected.");
-
+            if (StartTimePicker.SelectedDateTime == null || EndTimePicker.SelectedDateTime == null)
+                new ExceptionWindow("Could not save due to no proper time selected.");
+                
+            Settings.Default.StartTime = StartTimePicker.SelectedDateTime ?? throw new Exception();
+            Settings.Default.EndTime = EndTimePicker.SelectedDateTime ?? throw new Exception();
             Settings.Default.Save();
 
             await _themeSwitchService.Restart();

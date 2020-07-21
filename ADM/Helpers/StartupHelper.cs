@@ -1,6 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using ADM.Properties;
+using ADM.Views;
 using Microsoft.Win32;
 
 namespace ADM.Helpers
@@ -13,9 +13,9 @@ namespace ADM.Helpers
 
         public StartupHelper()
         {
-            var startupRegistry = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+            const string startupRegistry = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
             _key = Registry.CurrentUser.OpenSubKey(startupRegistry, true);
-            if (_key == null) throw new Exception("Could not find startup registry: " + startupRegistry);
+            if (_key == null) new ExceptionWindow("Could not find startup registry: " + startupRegistry);
             
             _exe = Process.GetCurrentProcess().MainModule?.FileName;
             Apply();

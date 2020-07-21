@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ADM.Helpers;
 using ADM.Jobs;
 using ADM.Properties;
+using ADM.Views;
 using Quartz;
 using Quartz.Impl;
 
@@ -57,7 +58,7 @@ namespace ADM
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                new ExceptionWindow("Could not initialize theme service: " + e.Message);
             }
         }
 

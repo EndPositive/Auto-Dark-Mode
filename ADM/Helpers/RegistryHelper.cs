@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using ADM.Properties;
+using ADM.Views;
 using Microsoft.Win32;
 
 namespace ADM.Helpers
@@ -17,7 +19,6 @@ namespace ADM.Helpers
                 var key = new RegistrySetting(keyString);
                 observableCollection.Add(key.Application);
             }
-
             return observableCollection;
         }
 
@@ -47,13 +48,14 @@ namespace ADM.Helpers
                 if (key.Application != application) continue;
                 Settings.Default.Keys.Remove(keyString);
                 Settings.Default.Save();
-                break;
+                return;
             }
+            new ExceptionWindow("Error finding " + application + " in settings");
         }
 
         public static void RestoreUi()
         {
-            Add("System Apps", @"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "SystemUsesLightTheme", "1", "0");
+            Add("System UI", @"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize", "SystemUsesLightTheme", "1", "0");
         }
 
         public static void RestoreApps()
@@ -64,7 +66,7 @@ namespace ADM.Helpers
         public static RegistryKey ParseKey(string key)
         {
             key = Regex.Replace(Regex.Replace(key, @"HKEY_CURRENT_USER\\", ""), @"\\", @"\\\\");
-            return Registry.CurrentUser.OpenSubKey(key);
+            return Registry.CurrentUser.OpenSubKey(key, true);
         }
 
         public static bool IsValidApplication(string application)
@@ -92,7 +94,7 @@ namespace ADM.Helpers
                 int.Parse(value);
                 return true;
             }
-            catch (System.FormatException)
+            catch (FormatException)
             {
                 return false;
             }

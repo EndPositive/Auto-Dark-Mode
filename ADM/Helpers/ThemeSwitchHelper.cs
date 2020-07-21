@@ -1,5 +1,6 @@
 ﻿using System;
 using ADM.Properties;
+using ADM.Views;
 
 namespace ADM.Helpers
 {
@@ -27,7 +28,8 @@ namespace ADM.Helpers
             if (DateTime.Now >= startTime && DateTime.Now < endTime.Add(new TimeSpan(1,0,0,0))) return Mode.Dark;
             if (DateTime.Now > endTime) return Mode.Light;
             if (DateTime.Now <= endTime) return Mode.Dark;
-            throw new Exception("Could not calculate current theme mode based on the current time.");
+            new ExceptionWindow("Could not calculate current theme mode based on the current time.");
+            throw new Exception();
         }
     }
 }

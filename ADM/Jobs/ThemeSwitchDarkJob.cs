@@ -6,9 +6,10 @@ namespace ADM.Jobs
 {
     public class ThemeSwitchDarkJob : IJob
     {
-        public async Task Execute(IJobExecutionContext context)
+        public Task Execute(IJobExecutionContext context)
         {
             ThemeSwitchHelper.Switch(ThemeSwitchHelper.Mode.Dark);
+            return Task.CompletedTask;
         }
     }
 }

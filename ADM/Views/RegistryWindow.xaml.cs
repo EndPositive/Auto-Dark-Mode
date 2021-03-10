@@ -30,7 +30,7 @@ namespace ADM.Views
         {
             if (!RegistryHelper.IsValidApplication(ApplicationTextBox.Text) ||
                 !RegistryHelper.IsValidKey(KeyTextBox.Text) ||
-                !RegistryHelper.IsValidName(NameTextBox.Text, KeyTextBox.Name) ||
+                !RegistryHelper.IsValidName(NameTextBox.Text, KeyTextBox.Text) ||
                 !RegistryHelper.IsValidValue(DarkValueTextBox.Text) ||
                 !RegistryHelper.IsValidValue(LightValueTextBox.Text)) return;
             RegistryHelper.Add(ApplicationTextBox.Text, KeyTextBox.Text, NameTextBox.Text,

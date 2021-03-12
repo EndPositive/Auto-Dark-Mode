@@ -7,14 +7,7 @@ on:
 jobs:
   release:
     name: Release
-    strategy:
-      matrix:
-        kind: ['windows']
-        include:
-          - kind: windows
-            os: windows-latest
-            target: win-x64
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
 
     steps:
       - name: Checkout

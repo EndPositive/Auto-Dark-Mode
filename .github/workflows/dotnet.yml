@@ -1,0 +1,39 @@
+name: .NET
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  release:
+    name: Release
+    strategy:
+      matrix:
+        kind: ['windows']
+        include:
+          - kind: windows
+            os: windows-latest
+            target: win-x64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+    
+      - name: Build
+        shell: bash
+        run: |
+          dotnet publish ADM/ADM.csproj -r win-x64 -c Release -o ./ -p:PublishSingleFile=true --self-contained false
+
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "./ADM.exe"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet test --no-build --verbosity normal
